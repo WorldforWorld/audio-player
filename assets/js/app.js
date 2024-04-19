@@ -1,79 +1,99 @@
-var audio = document.querySelector(".music"),
-  btnImg = document.querySelector(".play__btn"),
-  audioName = document.querySelector(".audio__name"),
-  audioImg = document.querySelector(".music__img"),
-  progressBar = document.querySelector(".progress__border"),
-  progressContainer = document.querySelector(".progress__bar");
+const wrapper = document.querySelector(".wrapper"),
+  musicImg = wrapper.querySelector("img"),
+  musicName = wrapper.querySelector(".name"),
+  musicArtist = wrapper.querySelector(".artist"),
+  playPauseBtn = wrapper.querySelector(".play-pause"),
+  prevBtn = wrapper.querySelector("#prev"),
+  nextBtn = wrapper.querySelector("#next"),
+  mainAudio = wrapper.querySelector("#main-audio"),
+  progressArea = wrapper.querySelector(".progress-area"),
+  progressBar = progressArea.querySelector(".progress-bar");
 
-var num = 0;
+let musicIndex = Math.floor(Math.random() * allMusic.length + 1);
+isMusicPaused = true;
 
-function play() {
-  btnImg.src = "./assets/img/pouse.png";
-  audio.play();
-}
-
-function pause() {
-  btnImg.src = "./assets/img/play.png";
-  audio.pause();
-}
-
-document.querySelector(".btn").addEventListener("click", () => {
-  num++;
-  if (num % 2 !== 0) {
-    play();
-  }
-
-  if (num % 2 == 0) {
-    pause();
-  }
+window.addEventListener("load", () => {
+  loadMusic(musicIndex);
 });
 
-var songNum = 0;
-
-const songs = ["play1", "play2"];
-
-function changeMusic(song) {
-  audioName.innerHTML = song;
-  audio.src = `./assets/audio/${song}.mp3`;
-  audioImg.src = `./assets/img/music${songNum + 1}.png`;
+function loadMusic(indexNumb) {
+  musicName.innerText = allMusic[indexNumb - 1].name;
+  musicArtist.innerText = allMusic[indexNumb - 1].artist;
+  musicImg.src = `assets/image/${allMusic[indexNumber - 1].src}.jpg`;
+  mainAudio.src = `assets/songs/${allMusic[indexNumb - 1].src}.mp3 `;
 }
 
-document.querySelector(".next__btn").addEventListener("click", () => {
-  songNum++;
+function playMusic() {
+  wrapper.classList.add("paused");
+  musicImg.classList.add("rotate");
+  playPauseBtn.innerHTML = `<i class="fi fi-sr-pause"></i>`;
+  mainAudio.play();
+}
 
-  if (songNum > songs.length - 1) {
-    songNum = 0;
-  }
+function pauseMusic() {
+  wrapper.classList.remove("paused");
+  musicImg.classList.remove("rotate");
+  playPauseBtn.innerHTML = `<i class="fi fi-sr-play"></i>`;
+  mainAudio.pause();
+}
 
-  changeMusic(songs[songNum]);
-  play();
+function prevMusic() {
+  musicIndex--;
+  musicIndex < 1 ? (musicIndex = allMusic.length) : (musicIndex = musicIndex);
+  loadMusic(musicIndex);
+  playMusic();
+}
+function prevMusic() {
+  musicIndex++;
+  musicIndex > allMusic.length ? (musicIndex = 1) : (musicIndex = musicIndex);
+  loadMusic(musicIndex);
+  playMusic();
+}
+
+playPauseBtn.addEventListener("click", () => {
+  const isMusicplay = wrapper.classList.contains("paused");
+  isMusicplay ? pauseMusic() : playMusic();
+});
+prevBtn.addEventListener("click", () => {
+  prevMusic();
+});
+nextBtn.addEventListener("click", () => {
+  nextMusic();
 });
 
-document.querySelector(".prev__btn").addEventListener("click", () => {
-  songNum--;
+mainAudio.addEventListener("timeupdate", (e) => {
+  const currentTime = e.target.currentTime;
+  const duration = e.target.duration;
+  let progressWidth = (currentTime / duration) * 100;
+  progressBar.style.width = `${progressWidth}%`;
 
-  if (songNum < 0) {
-    songNum = songs.length - 1;
+  let musicCurrentTime = wrapper.querySelector(".current-time"),
+    musicDuration = wrapper.querySelector(".max-duration");
+  mainAudio.addEventListener("loadeddata", () => {
+    let mainAdDuration = mainAudio.duration;
+    let totalMin = Math.floor(mainAdDuration / 60);
+    let totalSec = Math.floor(mainAdDuration % 60);
+    if (totalSec < 10) {
+      totalSec = `0${totalSec}`;
+    }
+    musicDuration.innerText = `${totalMin}:${totalSec}`;
+  });
+
+  let currentMin = Math.floor(currentTime / 60);
+  let currentSec = Math.floor(currentTime % 60);
+  if (currentSec < 10) {
+    currentSec = `0${currentSec}`;
   }
-
-  changeMusic(songs[songNum]);
-  play();
+  musicCurrentTime.innerText = `${currentMin}:${currentSec}`;
 });
 
-function musicBar() {
-  const duration = audio.duration;
-  const currentTime = audio.currentTime;
-  var width = (currentTime / duration) * 100;
-  progressBar.style.width = `${width}%`;
-}
-
-audio.addEventListener("timeupdate", musicBar);
-
-function changeTime(elem) {
-  const width = this.clientWidth;
-  const clickX = elem.offsetX;
-  const duration = audio.duration;
-  audio.currentTime = (clickX / width) * duration;
-}
-
-progressContainer.addEventListener("click", changeTime);
+progressArea.addEventListener("click", (e) => {
+  let progressWidth = progressArea.clientWidth;
+  let clickedOffsetX = e.offsetX;
+  let songDuration = mainAudio.duration;
+  mainAudio.currentTime = (clickedOffsetX / progressWidth) * songDuration;
+  playMusic();
+});
+mainAudio.addEventListener("ended", () => {
+  nextMusic();
+});

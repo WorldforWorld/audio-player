@@ -2,30 +2,61 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css"
+    />
     <link rel="stylesheet" href="./assets/css/style.css" />
-    <title>Audio player</title>
+    <title>Document</title>
   </head>
   <body>
-    <div class="audio__block">
-      <div class="audio__cart">
-        <p class="title">Playing Music</p>
-        <div class="progress__bar">
-          <div class="progress__border"></div>
+    <div class="wrapper">
+      <header>
+        <button class="hdbtn">
+          <i class="fi fi-sr-arrow-small-left"></i>
+        </button>
+        <h3 class="p-now">Playing now</h3>
+        <button class="hdbtn">
+          <i class="fi fi-sr-list"></i>
+        </button>
+      </header>
+
+      <div class="player">
+        <div class="img-area">
+          <img src="assets/images/According.jpg" alt="" />
         </div>
-        <audio class="music" src="./assets/audio/play1.mp3"></audio>
-        <img class="music__img" src="./assets/img/music1.png" alt="" />
-        <p class="audio__name">play1</p>
-        <button type="submit" class="btn">
-          <img class="play__btn" src="./assets/img/play.png" alt="" />
-        </button>
-        <button type="submit" class="next__btn">
-          <img src="./assets/img/next.png" alt="" />
-        </button>
-        <button type="submit" class="prev__btn">
-          <img src="./assets/img/prev.png" alt="" />
-        </button>
+
+        <div class="song-details">
+          <h1 class="name">Animation</h1>
+          <h3 class="artist">Coding</h3>
+        </div>
+
+        <div class="audioC">
+          <div class="song-timer">
+            <span class="current-time">0:00</span>
+            <span class="max-duration">0:00</span>
+          </div>
+          <div class="progress-area">
+            <div class="progress-bar">
+              <audio id="main-audio" src="assets/songs/music-7.mp3"></audio>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="btnC" id="prev">
+            <i class="fi fi-sr-rewind"></i>
+          </button>
+          <button class="play-pause btnC">
+            <i class="fi fi-sr-play play"></i>
+          </button>
+          <button class="btnC" id="next">
+            <i class="fi fi-sr-forward"></i>
+          </button>
+        </div>
       </div>
     </div>
+    <script src="./assets/js/music-list.js"></script>
     <script src="./assets/js/app.js"></script>
   </body>
 </html>
